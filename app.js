@@ -8,36 +8,56 @@ let arrayInLocalStorage = JSON.parse(localStorage.getItem('itemsArray', itemsArr
 
 // rendering on load
 window.onload = () => {
-    itemsArray = arrayInLocalStorage;
+    listInput.focus();
 
-    console.log(itemsArray)
+    itemsArray = arrayInLocalStorage;
 
     // rendering list 
     for (i = 0; i < itemsArray.length; i++) {
-        listItems.innerHTML += `<li><span>${itemsArray[i]}</span><input type="text" class="editField"><button class="editItem" onclick="editItem(this, ${i})">Edit</button><button class="saveItem" onclick="saveItem(this, ${i})">Save</button><button class="delete" onclick="deleteItem(this, ${i})">Delete</button><button class="cancelEdit" onclick="cancelEdit(this)">Cancel</button></li>`;
+        listItems.innerHTML += `<li><input type="checkbox" onclick="completedItem(this, ${i})" ${(itemsArray[i].completed) ? "checked" : ""}><span class="${(itemsArray[i].completed) ? "checked" : ""}">${itemsArray[i].todo}</span><input type="text" class="editField"><button class="editItem" onclick="editItem(this, ${i})">Edit</button><button class="saveItem" onclick="saveItem(this, ${i})">Save</button><button class="delete" onclick="deleteItem(this, ${i})">Delete</button><button class="cancelEdit" onclick="cancelEdit(this)">Cancel</button> - <span class="createdAt">${itemsArray[i].timeCreated}</span></li>`;
     }
 }
 
 // rendering on submit
 listInputForm.onsubmit = () => {
+
+    // getting input value
     inputValue = listInput.value;
+
     if (inputValue !== "") {
+
+        // 12 hour format
+        let rightNow = new Date();
+        let hour = rightNow.getHours();
+        let minutes = rightNow.getMinutes();
+
+        if (hour > 12) {
+            hour = '0' + hour - 12;
+        }
+        if (hour < 10) {
+            hour = "0" + hour;
+        }
+        if (minutes < 10) {
+            minutes = "0" + minutes;
+        }
+
+        let timeCreated = hour + ':' + minutes;
+
         // adding data in itemsArray
-        itemsArray.unshift(inputValue);
+        itemsArray.unshift({ todo: inputValue, timeCreated, completed: false });
+
+        console.log(itemsArray)
 
         // setting and getting data from local storage
         localStorage.setItem('itemsArray', JSON.stringify(itemsArray));
-        // arrayInLocalStorage = JSON.parse(localStorage.getItem('itemsArray', itemsArray));
 
         // clearing list so there won't be any duplicates
         listItems.innerHTML = "";
 
         // rendering list 
         for (i = 0; i < itemsArray.length; i++) {
-            listItems.innerHTML += `<li><span>${itemsArray[i]}</span><input type="text" class="editField"><button class="editItem" onclick="editItem(this, ${i})">Edit</button><button class="saveItem" onclick="saveItem(this, ${i})">Save</button><button class="delete" onclick="deleteItem(this, ${i})">Delete</button><button class="cancelEdit" onclick="cancelEdit(this)">Cancel</button></li>`;
+            listItems.innerHTML += `<li><input type="checkbox" onclick="completedItem(this, ${i})" ${(itemsArray[i].completed) ? "checked" : ""}><span class="${(itemsArray[i].completed) ? "checked" : ""}">${itemsArray[i].todo}</span><input type="text" class="editField"><button class="editItem" onclick="editItem(this, ${i})">Edit</button><button class="saveItem" onclick="saveItem(this, ${i})">Save</button><button class="delete" onclick="deleteItem(this, ${i})">Delete</button><button class="cancelEdit" onclick="cancelEdit(this)">Cancel</button> - <span class="createdAt">${itemsArray[i].timeCreated}</span></li>`;
         }
-
-        console.log(itemsArray);
     } else {
         // calling dumb, dumb.
         alert("Sorry to call you dumb. But write something, you dumb.");
@@ -50,21 +70,37 @@ listInputForm.onsubmit = () => {
     return false;
 }
 
+const completedItem = (completedItem, index) => {
+    let itemTxt = completedItem.nextSibling;
+
+    if (completedItem.checked === true) {
+        itemsArray[index].completed = true;
+        itemTxt.style.textDecoration = "line-through";
+    } else {
+        itemsArray[index].completed = false;
+        itemTxt.style.textDecoration = "none";
+    }
+
+    // setting and getting data again from local storage
+    localStorage.setItem('itemsArray', JSON.stringify(itemsArray));
+}
+
 
 const deleteItem = (deleteItem, index) => {
+    let itemTxt = deleteItem.previousSibling.previousSibling.previousSibling.previousSibling;
+
     itemsArray.splice(index, 1);
-    
+
     // clearing list so there won't be any duplicates
     listItems.innerHTML = "";
 
     // rendering list 
     for (i = 0; i < itemsArray.length; i++) {
-        listItems.innerHTML += `<li><span>${itemsArray[i]}</span><input type="text" class="editField"><button class="editItem" onclick="editItem(this, ${i})">Edit</button><button class="saveItem" onclick="saveItem(this, ${i})">Save</button><button class="delete" onclick="deleteItem(this, ${i})">Delete</button><button class="cancelEdit" onclick="cancelEdit(this)">Cancel</button></li>`;
+        listItems.innerHTML += `<li><input type="checkbox" onclick="completedItem(this, ${i})" ${(itemsArray[i].completed) ? "checked" : ""}><span class="${(itemsArray[i].completed) ? "checked" : ""}">${itemsArray[i].todo}</span><input type="text" class="editField"><button class="editItem" onclick="editItem(this, ${i})">Edit</button><button class="saveItem" onclick="saveItem(this, ${i})">Save</button><button class="delete" onclick="deleteItem(this, ${i})">Delete</button><button class="cancelEdit" onclick="cancelEdit(this)">Cancel</button> - <span class="createdAt">${itemsArray[i].timeCreated}</span></li>`;
     }
 
     // setting and getting data again from local storage
     localStorage.setItem('itemsArray', JSON.stringify(itemsArray));
-
 }
 
 
@@ -93,13 +129,12 @@ const saveItem = (saveItem, index) => {
     let cancelEdit = saveItem.nextSibling.nextSibling;
     let deleteBtn = saveItem.nextSibling;
 
-    itemsArray[index] = editField.value;
+    itemsArray[index].todo = editField.value;
+
     itemTxt.innerHTML = editField.value;
 
     // setting and getting data again from local storage
     localStorage.setItem('itemsArray', JSON.stringify(itemsArray));
-
-    console.log(itemsArray)
 
     editBtn.style.display = "inline";
     saveItem.style.display = "none";

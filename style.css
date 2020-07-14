@@ -41,9 +41,13 @@ ul {
 }
 
 ul li {
-    list-style:  none;
+    list-style: none;
 }
 
 .editField, .saveItem, .cancelEdit {
     display: none;
+}
+
+.checked {
+    text-decoration: line-through;
 }
