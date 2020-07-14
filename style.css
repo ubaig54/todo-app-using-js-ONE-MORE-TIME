@@ -44,6 +44,6 @@ ul li {
     list-style:  none;
 }
 
-.editField, .saveItem {
+.editField, .saveItem, .cancelEdit {
     display: none;
 }
