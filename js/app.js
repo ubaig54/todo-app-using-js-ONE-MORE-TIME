@@ -1,20 +1,37 @@
-const listItems = document.querySelector('.listItems');
-const listInput = document.querySelector('.listInput');
+let loginStatus = JSON.parse(localStorage.getItem('loginStatus'));
+let currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+if (!loginStatus) {
+    window.location = 'login.html';
+}
 
 const listInputForm = document.querySelector('.listInputForm');
+const listItems = document.querySelector('.listItems');
+const listInput = document.querySelector('.listInput');
+const greetings = document.querySelector('.greetings');
+
+console.log(greetings)
+
 
 let itemsArray = [];
-let arrayInLocalStorage = JSON.parse(localStorage.getItem('itemsArray', itemsArray));
+let arrayInLocalStorage = JSON.parse(localStorage.getItem('itemsArray'));
+
+if (arrayInLocalStorage && arrayInLocalStorage.length > 0) {
+    itemsArray = arrayInLocalStorage;
+}
 
 // rendering on load
 window.onload = () => {
-    listInput.focus();
 
-    itemsArray = arrayInLocalStorage;
+    greetings.innerHTML = 'Hi, ' + currentUser.name + '.';
+
+    listInput.focus();
 
     // rendering list 
     for (i = 0; i < itemsArray.length; i++) {
-        listItems.innerHTML += `<li><input type="checkbox" onclick="completedItem(this, ${i})" ${(itemsArray[i].completed) ? "checked" : ""}><span class="${(itemsArray[i].completed) ? "checked" : ""}">${itemsArray[i].todo}</span><input type="text" class="editField"><button class="editItem" onclick="editItem(this, ${i})">Edit</button><button class="saveItem" onclick="saveItem(this, ${i})">Save</button><button class="delete" onclick="deleteItem(this, ${i})">Delete</button><button class="cancelEdit" onclick="cancelEdit(this)">Cancel</button> - <span class="createdAt">${itemsArray[i].timeCreated}</span></li>`;
+        if (itemsArray[i].user === currentUser.email) {
+            listItems.innerHTML += `<li><input type="checkbox" onclick="completedItem(this, ${i})" ${(itemsArray[i].completed) ? "checked" : ""}><span class="${(itemsArray[i].completed) ? "checked" : ""}">${itemsArray[i].todo}</span><input type="text" class="editField"><button class="editItem" onclick="editItem(this, ${i})">Edit</button><button class="saveItem" onclick="saveItem(this, ${i})">Save</button><button class="delete" onclick="deleteItem(this, ${i})">Delete</button><button class="cancelEdit" onclick="cancelEdit(this)">Cancel</button> - <span class="createdAt">${itemsArray[i].timeCreated}</span></li>`;
+        }
     }
 }
 
@@ -44,9 +61,7 @@ listInputForm.onsubmit = () => {
         let timeCreated = hour + ':' + minutes;
 
         // adding data in itemsArray
-        itemsArray.unshift({ todo: inputValue, timeCreated, completed: false });
-
-        console.log(itemsArray)
+        itemsArray.unshift({ todo: inputValue, timeCreated, completed: false, user: currentUser.email });
 
         // setting and getting data from local storage
         localStorage.setItem('itemsArray', JSON.stringify(itemsArray));
@@ -56,7 +71,9 @@ listInputForm.onsubmit = () => {
 
         // rendering list 
         for (i = 0; i < itemsArray.length; i++) {
-            listItems.innerHTML += `<li><input type="checkbox" onclick="completedItem(this, ${i})" ${(itemsArray[i].completed) ? "checked" : ""}><span class="${(itemsArray[i].completed) ? "checked" : ""}">${itemsArray[i].todo}</span><input type="text" class="editField"><button class="editItem" onclick="editItem(this, ${i})">Edit</button><button class="saveItem" onclick="saveItem(this, ${i})">Save</button><button class="delete" onclick="deleteItem(this, ${i})">Delete</button><button class="cancelEdit" onclick="cancelEdit(this)">Cancel</button> - <span class="createdAt">${itemsArray[i].timeCreated}</span></li>`;
+            if (itemsArray[i].user === currentUser.email) {
+                listItems.innerHTML += `<li><input type="checkbox" onclick="completedItem(this, ${i})" ${(itemsArray[i].completed) ? "checked" : ""}><span class="${(itemsArray[i].completed) ? "checked" : ""}">${itemsArray[i].todo}</span><input type="text" class="editField"><button class="editItem" onclick="editItem(this, ${i})">Edit</button><button class="saveItem" onclick="saveItem(this, ${i})">Save</button><button class="delete" onclick="deleteItem(this, ${i})">Delete</button><button class="cancelEdit" onclick="cancelEdit(this)">Cancel</button> - <span class="createdAt">${itemsArray[i].timeCreated}</span></li>`;
+            }
         }
     } else {
         // calling dumb, dumb.
@@ -96,7 +113,9 @@ const deleteItem = (deleteItem, index) => {
 
     // rendering list 
     for (i = 0; i < itemsArray.length; i++) {
-        listItems.innerHTML += `<li><input type="checkbox" onclick="completedItem(this, ${i})" ${(itemsArray[i].completed) ? "checked" : ""}><span class="${(itemsArray[i].completed) ? "checked" : ""}">${itemsArray[i].todo}</span><input type="text" class="editField"><button class="editItem" onclick="editItem(this, ${i})">Edit</button><button class="saveItem" onclick="saveItem(this, ${i})">Save</button><button class="delete" onclick="deleteItem(this, ${i})">Delete</button><button class="cancelEdit" onclick="cancelEdit(this)">Cancel</button> - <span class="createdAt">${itemsArray[i].timeCreated}</span></li>`;
+        if (itemsArray[i].user === currentUser.email) {
+            listItems.innerHTML += `<li><input type="checkbox" onclick="completedItem(this, ${i})" ${(itemsArray[i].completed) ? "checked" : ""}><span class="${(itemsArray[i].completed) ? "checked" : ""}">${itemsArray[i].todo}</span><input type="text" class="editField"><button class="editItem" onclick="editItem(this, ${i})">Edit</button><button class="saveItem" onclick="saveItem(this, ${i})">Save</button><button class="delete" onclick="deleteItem(this, ${i})">Delete</button><button class="cancelEdit" onclick="cancelEdit(this)">Cancel</button> - <span class="createdAt">${itemsArray[i].timeCreated}</span></li>`;
+        }
     }
 
     // setting and getting data again from local storage
@@ -159,4 +178,12 @@ const cancelEdit = (cancelEdit) => {
 
     itemTxt.style.display = "inline";
     editField.style.display = "none";
+}
+
+let logout = document.querySelector('.logout');
+
+logout.onclick = () => {
+    localStorage.setItem('loginStatus', false);
+    localStorage.removeItem('currentUser');
+    location.reload();
 }

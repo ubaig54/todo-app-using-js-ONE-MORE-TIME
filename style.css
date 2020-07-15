@@ -51,3 +51,7 @@ ul li {
 .checked {
     text-decoration: line-through;
 }
+
+.signupCard {
+    display: none;
+}
