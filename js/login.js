@@ -5,7 +5,7 @@ if (loginStatus) {
 }
 
 let users = [];
-let usersInLocalStorage = JSON.parse(localStorage.getItem('users', users));
+let usersInLocalStorage = JSON.parse(localStorage.getItem('users'));
 
 if (usersInLocalStorage && usersInLocalStorage.length > 0) {
     users = usersInLocalStorage;
@@ -18,13 +18,13 @@ const gotoSignup = document.querySelector('.gotoSignup');
 const gotoLogin = document.querySelector('.gotoLogin');
 
 gotoSignup.onclick = () => {
-    loginCard.style.display = "none";
-    signupCard.style.display = "block";
+    loginCard.style.display = 'none';
+    signupCard.style.display = 'block';
 }
 
 gotoLogin.onclick = () => {
-    loginCard.style.display = "block";
-    signupCard.style.display = "none";
+    loginCard.style.display = 'block';
+    signupCard.style.display = 'none';
 }
 
 const signupForm = document.querySelector('#signupForm');
@@ -51,13 +51,11 @@ signupForm.onsubmit = () => {
 
     if (formValidity) {
         users.push({ name: signupName.value, email: signupEmail.value, pw: signupPw.value });
+        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('loginStatus', true);
+        localStorage.setItem('currentUser', JSON.stringify({ name: users[i].name, email: users[i].email }));
+        window.location = location.origin;
     }
-
-    localStorage.setItem('users', JSON.stringify(users));
-
-    localStorage.setItem('loginStatus', true);
-    localStorage.setItem('currentUser', JSON.stringify({ name: users[i].name, email: users[i].email }));
-    window.location = location.origin;
 
     return false;
 }

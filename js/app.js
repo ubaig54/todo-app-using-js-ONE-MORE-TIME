@@ -10,9 +10,6 @@ const listItems = document.querySelector('.listItems');
 const listInput = document.querySelector('.listInput');
 const greetings = document.querySelector('.greetings');
 
-console.log(greetings)
-
-
 let itemsArray = [];
 let arrayInLocalStorage = JSON.parse(localStorage.getItem('itemsArray'));
 
@@ -41,7 +38,7 @@ listInputForm.onsubmit = () => {
     // getting input value
     inputValue = listInput.value;
 
-    if (inputValue !== "") {
+    if (inputValue !== '') {
 
         // 12 hour format
         let rightNow = new Date();
@@ -52,10 +49,10 @@ listInputForm.onsubmit = () => {
             hour = '0' + hour - 12;
         }
         if (hour < 10) {
-            hour = "0" + hour;
+            hour = '0' + hour;
         }
         if (minutes < 10) {
-            minutes = "0" + minutes;
+            minutes = '0' + minutes;
         }
 
         let timeCreated = hour + ':' + minutes;
@@ -67,7 +64,7 @@ listInputForm.onsubmit = () => {
         localStorage.setItem('itemsArray', JSON.stringify(itemsArray));
 
         // clearing list so there won't be any duplicates
-        listItems.innerHTML = "";
+        listItems.innerHTML = '';
 
         // rendering list 
         for (i = 0; i < itemsArray.length; i++) {
@@ -77,11 +74,11 @@ listInputForm.onsubmit = () => {
         }
     } else {
         // calling dumb, dumb.
-        alert("Sorry to call you dumb. But write something, you dumb.");
+        alert('Sorry to call you dumb. But write something, you dumb.');
     }
 
     // clearing input when user add item in list
-    listInput.value = "";
+    listInput.value = '';
 
     // so the <form> don't referesh the website on submit
     return false;
@@ -92,10 +89,10 @@ const completedItem = (completedItem, index) => {
 
     if (completedItem.checked === true) {
         itemsArray[index].completed = true;
-        itemTxt.style.textDecoration = "line-through";
+        itemTxt.style.textDecoration = 'line-through';
     } else {
         itemsArray[index].completed = false;
-        itemTxt.style.textDecoration = "none";
+        itemTxt.style.textDecoration = 'none';
     }
 
     // setting and getting data again from local storage
@@ -109,7 +106,7 @@ const deleteItem = (deleteItem, index) => {
     itemsArray.splice(index, 1);
 
     // clearing list so there won't be any duplicates
-    listItems.innerHTML = "";
+    listItems.innerHTML = '';
 
     // rendering list 
     for (i = 0; i < itemsArray.length; i++) {
@@ -132,13 +129,13 @@ const editItem = (editItem) => {
 
     editField.value = itemTxt.innerHTML;
 
-    editItem.style.display = "none";
-    saveBtn.style.display = "inline";
-    cancelEdit.style.display = "inline";
-    deleteBtn.style.display = "none";
+    editItem.style.display = 'none';
+    saveBtn.style.display = 'inline';
+    cancelEdit.style.display = 'inline';
+    deleteBtn.style.display = 'none';
 
-    itemTxt.style.display = "none";
-    editField.style.display = "inline";
+    itemTxt.style.display = 'none';
+    editField.style.display = 'inline';
 }
 
 const saveItem = (saveItem, index) => {
@@ -155,13 +152,13 @@ const saveItem = (saveItem, index) => {
     // setting and getting data again from local storage
     localStorage.setItem('itemsArray', JSON.stringify(itemsArray));
 
-    editBtn.style.display = "inline";
-    saveItem.style.display = "none";
-    cancelEdit.style.display = "none";
-    deleteBtn.style.display = "inline";
+    editBtn.style.display = 'inline';
+    saveItem.style.display = 'none';
+    cancelEdit.style.display = 'none';
+    deleteBtn.style.display = 'inline';
 
-    itemTxt.style.display = "inline";
-    editField.style.display = "none";
+    itemTxt.style.display = 'inline';
+    editField.style.display = 'none';
 }
 
 const cancelEdit = (cancelEdit) => {
@@ -171,13 +168,13 @@ const cancelEdit = (cancelEdit) => {
     let saveBtn = cancelEdit.previousSibling.previousSibling;
     let deleteBtn = cancelEdit.previousSibling;
 
-    editBtn.style.display = "inline";
-    saveBtn.style.display = "none";
-    cancelEdit.style.display = "none";
-    deleteBtn.style.display = "inline";
+    editBtn.style.display = 'inline';
+    saveBtn.style.display = 'none';
+    cancelEdit.style.display = 'none';
+    deleteBtn.style.display = 'inline';
 
-    itemTxt.style.display = "inline";
-    editField.style.display = "none";
+    itemTxt.style.display = 'inline';
+    editField.style.display = 'none';
 }
 
 let logout = document.querySelector('.logout');
